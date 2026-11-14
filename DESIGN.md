@@ -37,3 +37,12 @@ relation exclusions, confidence thresholds, group inference, split generation,
 automatic data movement, fuzzy matching or payload scans. Real evaluation design
 and false/omitted edges remain the caller's responsibility. No claims about
 statistical independence or score impact follow from this graph calculation.
+
+## Opt-in membership mode
+
+See MEMBERSHIPS.md. It uses an incidence representation keyed by exact namespace/
+group tuples; each membership participates in union-find and witness traversal.
+BFS expands groups once, so a shared group is a single hop between any members
+without materializing all its pairs. Every record needs coverage. It returns its
+own explicit mode and count fields; the original link-mode implementation and
+report remain unchanged. CLI chooses the auditor only by the explicit flag.
