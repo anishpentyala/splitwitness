@@ -214,4 +214,4 @@ def audit(records_path, links_path, *, examples=0, max_witness_edges=20, limits=
             "limits": dict(vars(limits)),
         },
         "inputs": {"records": records_receipt, "links": links_receipt},
-  }
+    }
