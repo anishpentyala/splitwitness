@@ -1,0 +1,6 @@
+id,split
+photo-001,train
+photo-002,train
+photo-003,test
+photo-004,test
+unrelated-005,validation
