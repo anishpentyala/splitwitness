@@ -148,7 +148,8 @@ def audit(records_path, links_path, *, examples=0, max_witness_edges=20, limits=
     )
     groups = _Groups(splits)
     seen = set()
-    adjacency = defaultdict(list)
+    adjacency = defaultdict(list) if examples else None
+    incident = set()
     crossing_links = 0
     for number, (left, right, relation) in enumerate(rows, 2):
         if left not in splits or right not in splits:
@@ -158,8 +159,10 @@ def audit(records_path, links_path, *, examples=0, max_witness_edges=20, limits=
             raise AuditError(f"links: duplicate undirected link at record {number}")
         seen.add(edge)
         groups.join(left, right)
-        adjacency[left].append((right, relation))
-        adjacency[right].append((left, relation))
+        incident.update((left, right))
+        if adjacency is not None:
+            adjacency[left].append((right, relation))
+            adjacency[right].append((left, relation))
         crossing_links += splits[left] != splits[right]
     link_count = len(rows)
     del rows, seen
@@ -196,7 +199,7 @@ def audit(records_path, links_path, *, examples=0, max_witness_edges=20, limits=
             "records": len(splits),
             "links": link_count,
             "components": len(components),
-            "isolated_records": sum(key not in adjacency for key in splits),
+            "isolated_records": len(splits) - len(incident),
             "violating_components": len(bad),
             "affected_records": sum(affected.values()),
             "crossing_links": crossing_links,
