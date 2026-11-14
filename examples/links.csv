@@ -1,0 +1,4 @@
+left_id,right_id,relation
+photo-001,photo-002,same-patient
+photo-002,photo-003,duplicate-export
+photo-003,photo-004,same-session
