@@ -1,0 +1,8 @@
+record_id,namespace,group_id
+photo-001,patient,patient-A
+photo-002,patient,patient-A
+photo-002,export,export-B
+photo-003,export,export-B
+photo-003,session,session-C
+photo-004,session,session-C
+unrelated-005,singleton,unrelated-005

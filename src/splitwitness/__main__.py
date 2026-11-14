@@ -3,6 +3,7 @@ import json
 import sys
 
 from .core import AuditError, Limits, audit
+from .memberships import audit_memberships
 
 
 def main(argv=None):
@@ -11,6 +12,11 @@ def main(argv=None):
     )
     parser.add_argument("records", help="UTF-8 CSV with exact header id,split")
     parser.add_argument("links", help="CSV: left_id,right_id,relation")
+    parser.add_argument(
+        "--memberships",
+        action="store_true",
+        help="Interpret second input as record_id,namespace,group_id; require all records covered",
+    )
     parser.add_argument("--examples", type=int, default=0)
     parser.add_argument("--max-witness-edges", type=int, default=20)
     for name, value in vars(Limits()).items():
@@ -18,7 +24,8 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         limits = Limits(**{name: getattr(args, name) for name in vars(Limits())})
-        report = audit(
+        auditor = audit_memberships if args.memberships else audit
+        report = auditor(
             args.records,
             args.links,
             examples=args.examples,

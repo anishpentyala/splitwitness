@@ -34,6 +34,14 @@ record pairs in that component. The fifth record is isolated and not affected.
 The example witness goes from photo-001 to photo-003 in two hops, through
 same-patient and duplicate-export links.
 
+## Group inventories
+
+Opt-in `--memberships` accepts complete namespaced group inventories instead of
+explicit link pairs, without expanding each group into a quadratic clique.
+See [MEMBERSHIPS.md](MEMBERSHIPS.md) for its separate counts, shortest group-hop
+witnesses and additional disclosure of group IDs in opt-in examples. Link mode
+and its report stay unchanged.
+
 ## Manifests
 
 `records.csv`, with this exact ordered header:
@@ -126,7 +134,8 @@ The graph, CSV bytes and parsed strings live in process memory. This is not a
 streaming/disk-backed implementation and caps are **not** hard RAM or runtime
 bounds. Memory use is O(input bytes + records + links); retained graph adjacency
 includes both orientations. Sorting and witness searches add work. Each sampled
-component is searched separately. Avoid untrusted device/FIFO paths or files that
+component is searched separately. Membership mode has its own incidence-graph
+costs described in MEMBERSHIPS.md. Avoid untrusted device/FIFO paths or files that
 may block indefinitely. There is no timeout or sandbox for filesystem reads.
 
 No network calls, telemetry, persistent cache or scratch database. No payload
