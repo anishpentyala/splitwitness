@@ -64,7 +64,10 @@ Each witness edge has left_id, right_id, namespace and group_id. This explicitly
 shows why the two endpoints were connected. The values are caller assertions,
 not an authenticated identity or data-provenance proof. If the witness exceeds
 `--max-witness-edges`, its entire path is omitted, with exact hops/endpoints and
-`path_omitted: true`. The cap is inclusive and bounds report path size only.
+`path_omitted: true`. The cap is inclusive. The exact predecessor-chain distance is counted first;
+edge dictionaries are built only if the complete path fits the cap. The BFS
+queue, predecessor map and inventory graph still take memory. Retained paths
+are walked a second time. This is not a traversal, hard RAM or speed guarantee.
 
 ## Limits, cost and disclosure
 

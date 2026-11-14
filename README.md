@@ -113,8 +113,13 @@ semantic results.
 
 `--max-witness-edges N` defaults to 20. A longer path is omitted entirely, with
 `path: null`, `path_omitted: true` and its exact hop count. It is not presented as
-a clipped proof. This bounds report evidence size, not traversal cost. Increasing
-examples or the path limit can expose more identifiers and make reports large.
+a clipped proof. This bounds report evidence size, not traversal cost. The predecessor chain is
+counted before edge dictionaries are built; an omitted path does not allocate
+those dictionaries. Breadth-first search still retains its queue and predecessor
+map, and graph storage remains in memory. A retained path is walked a second time
+to build its evidence. This is not a hard RAM bound or a general speed claim.
+Increasing examples or the path limit can expose more identifiers and make
+reports large.
 
 `inputs` contains SHA-256 and byte counts of the exact bytes parsed from each
 file, including headers/newlines. Permuting equivalent CSV changes the receipts,

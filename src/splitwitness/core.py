@@ -95,21 +95,28 @@ def _witness(members, splits, adjacency, edge_cap):
             if neighbor not in previous:
                 previous[neighbor] = (key, relation)
                 queue.append(neighbor)
-    path = []
+    hops = 0
     key = end
     while key != start:
-        before, relation = previous[key]
-        path.append({"left_id": before, "right_id": key, "relation": relation})
-        key = before
-    path.reverse()
+        key = previous[key][0]
+        hops += 1
+    path = None
+    if hops <= edge_cap:
+        path = []
+        key = end
+        while key != start:
+            before, relation = previous[key]
+            path.append({"left_id": before, "right_id": key, "relation": relation})
+            key = before
+        path.reverse()
     return {
         "start_id": start,
         "start_split": splits[start],
         "end_id": end,
         "end_split": splits[end],
-        "hops": len(path),
-        "path_omitted": len(path) > edge_cap,
-        "path": path if len(path) <= edge_cap else None,
+        "hops": hops,
+        "path_omitted": hops > edge_cap,
+        "path": path,
     }
 
 
