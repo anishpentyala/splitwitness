@@ -165,4 +165,4 @@ def audit_memberships(
             "limits": dict(vars(limits)),
         },
         "inputs": {"records": receipt, "memberships": membership_receipt},
-        }
+    }
