@@ -23,26 +23,33 @@ def _path(start, end, by_record, by_group, cap):
                 if neighbor not in previous:
                     previous[neighbor] = (current, group)
                     queue.append(neighbor)
+    hops = 0
     current = end
-    path = []
     while current != start:
-        before, (namespace, group_id) = previous[current]
-        path.append(
-            {
-                "left_id": before,
-                "right_id": current,
-                "namespace": namespace,
-                "group_id": group_id,
-            }
-        )
-        current = before
-    path.reverse()
+        current = previous[current][0]
+        hops += 1
+    path = None
+    if hops <= cap:
+        current = end
+        path = []
+        while current != start:
+            before, (namespace, group_id) = previous[current]
+            path.append(
+                {
+                    "left_id": before,
+                    "right_id": current,
+                    "namespace": namespace,
+                    "group_id": group_id,
+                }
+            )
+            current = before
+        path.reverse()
     return {
         "start_id": start,
         "end_id": end,
-        "hops": len(path),
-        "path_omitted": len(path) > cap,
-        "path": path if len(path) <= cap else None,
+        "hops": hops,
+        "path_omitted": hops > cap,
+        "path": path,
     }
 
 
@@ -158,4 +165,4 @@ def audit_memberships(
             "limits": dict(vars(limits)),
         },
         "inputs": {"records": receipt, "memberships": membership_receipt},
-    }
+        }
