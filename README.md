@@ -187,3 +187,19 @@ reversed inputs. See [DESIGN.md](DESIGN.md) for algorithms and [EVIDENCE.md](EVI
 for motivation and existing alternatives. This project does not claim a new graph
 algorithm or unique leakage detection. Source install only; no registry release
 or outside adoption is implied.
+
+## Counts-only link storage (0.2.1)
+
+In explicit-link mode, the default `examples=0` audit does not retain the
+bidirectional adjacency entries used only for witness paths. A set of incident
+record IDs still distinguishes a self-linked record from an isolated record.
+All links still take part in duplicate/endpoint validation, union-find grouping,
+crossing-link counts, transitive violations and pair counts. This does not skip
+constraint checks or return a partial audit.
+
+Requesting any examples retains witness adjacency as before, even when the
+path-output cap is zero. Membership-mode storage is unchanged. Parsed CSV rows,
+undirected-link duplicate detection, component members and other report state
+still consume memory; this is not streaming input or a hard RAM/time bound.
+Actual memory and time depend on graph shape and requested evidence, so no
+portable reduction or speedup is promised.
