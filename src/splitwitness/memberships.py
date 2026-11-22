@@ -89,20 +89,24 @@ def audit_memberships(
         limits,
         limits.max_links,
     )
-    by_record = defaultdict(set)
+    by_record = defaultdict(set) if examples else None
     by_group = defaultdict(set)
+    covered = set()
     for number, (key, namespace, group_id) in enumerate(rows, 2):
         if key not in splits:
             raise AuditError(f"memberships: unknown record at record {number}")
         group = (namespace, group_id)
-        if group in by_record[key]:
+        if key in by_group[group]:
             raise AuditError(f"memberships: duplicate membership at record {number}")
-        by_record[key].add(group)
+        if by_record is not None:
+            by_record[key].add(group)
         by_group[group].add(key)
+        covered.add(key)
     count = len(rows)
     del rows
-    if len(by_record) != len(splits):
+    if len(covered) != len(splits):
         raise AuditError("memberships: every assigned record needs a membership")
+    del covered
     groups = _Groups(splits)
     violating_groups = 0
     for members in by_group.values():
