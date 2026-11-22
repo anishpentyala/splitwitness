@@ -78,7 +78,15 @@ flag is present. There is no format auto-detection. Normal `audit`/CLI link mode
 and its report schema/default settings are unchanged.
 
 All inventory strings and associations are in memory, without temporary files or
-network calls. Storage is O(records + groups + memberships + input bytes), not
+network calls. With `examples=0`, only the group-to-record incidence index and
+a temporary covered-record set are built; the reverse record-to-group index is
+reserved for witness requests. Duplicate memberships are still rejected against
+the group index, and every record must still be covered. Any positive example
+request retains both indexes, even when no violation is found or the path cap is
+zero. This avoids one redundant index for counts-only audits, not all incidence
+storage. Group membership, union-find and component state still take memory.
+Actual allocation and runtime depend on inventory shape; this is not a general
+speedup or hard memory guarantee. Storage is O(records + groups + memberships + input bytes), not
 O(sum group_size squared). Group/member sorting and selected-component witness
 searches add work. A group's members are expanded once per witness. A large
 connected family may still take substantial memory/time, and acceptance caps are
