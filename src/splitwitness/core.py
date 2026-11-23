@@ -95,7 +95,9 @@ def _witness(members, splits, adjacency, edge_cap):
     end = next(key for key in members if splits[key] != splits[start])
     queue = deque([start])
     previous = {start: None}
-    while queue:
+    # First discovery fixes the shortest lexical path. Queued siblings cannot
+    # improve it, so do not expand them just to dequeue the destination.
+    while queue and end not in previous:
         key = queue.popleft()
         if key == end:
             break
