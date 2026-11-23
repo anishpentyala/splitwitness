@@ -3,6 +3,8 @@
 import csv
 import hashlib
 import io
+import os
+import stat
 from collections import Counter, defaultdict, deque
 from dataclasses import dataclass
 from pathlib import Path
@@ -34,7 +36,13 @@ class Limits:
 
 def _rows(path, header, label, limits, row_cap):
     try:
-        with Path(path).open("rb") as source:
+
+        def nonblocking(name, flags):
+            return os.open(name, flags | getattr(os, "O_NONBLOCK", 0))
+
+        with open(Path(path), "rb", opener=nonblocking) as source:
+            if not stat.S_ISREG(os.fstat(source.fileno()).st_mode):
+                raise AuditError(f"{label}: input must be a regular file")
             raw = source.read(limits.max_bytes + 1)
         if len(raw) > limits.max_bytes:
             raise AuditError(f"{label}: byte limit exceeded")
