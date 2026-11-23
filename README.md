@@ -9,7 +9,7 @@ reproducible evidence paths. Runs offline, with Python's standard library.
 ## Quickstart
 
 ```sh
-python -m pip install "git+https://github.com/anishpentyala/splitwitness.git"
+python -m pip install splitwitness
 cat > records.csv <<'CSV'
 id,split
 a,train
@@ -30,8 +30,8 @@ connected. Checking the grouping columns independently would miss the transitive
 relationship. The report checks only the links you supplied, not identity,
 statistical independence or all possible leakage.
 
-A PyPI release is being prepared. Until its package page is linked here, use the
-source-install command above.
+Available on [PyPI](https://pypi.org/project/splitwitness/).
+The source checkout is only needed for the repository examples below.
 
 A duplicate export can connect two patient groups even when the patient IDs do
 not overlap. Checking each grouping column separately misses the full affected
