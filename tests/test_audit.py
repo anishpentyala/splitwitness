@@ -43,6 +43,28 @@ class AuditTests(unittest.TestCase):
             result = main([str(self.records), str(self.links), *args])
         return result, stdout.getvalue(), stderr.getvalue()
 
+    def test_singleton_components_do_not_build_split_counters(self):
+        self.write(
+            [("a", "train"), ("b", "test"), ("c", "train"), ("d", "val")],
+            [("b", "c", "entity")],
+        )
+        from collections import Counter
+
+        sizes = []
+
+        def tracked(values=()):
+            values = list(values)
+            sizes.append(len(values))
+            return Counter(values)
+
+        expected = self.audit(examples=2)
+        with patch("splitwitness.core.Counter", side_effect=tracked):
+            actual = self.audit(examples=2)
+        self.assertEqual(actual, expected)
+        self.assertEqual(sizes, [4, 0, 2])
+        self.assertEqual(actual["counts"]["violating_components"], 1)
+        self.assertEqual(actual["examples"][0]["component_id"], "b")
+
     def test_direct_crossing(self):
         report = self.audit(examples=1)
         self.assertFalse(report["passed"])
