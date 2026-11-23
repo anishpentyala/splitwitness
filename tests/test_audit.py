@@ -394,7 +394,7 @@ class AuditTests(unittest.TestCase):
 
     def test_open_error_redacts_source(self):
         with (
-            patch("pathlib.Path.open", side_effect=OSError("private-secret")),
+            patch("splitwitness.core.open", side_effect=OSError("private-secret")),
             self.assertRaises(AuditError) as caught,
         ):
             self.audit()
@@ -440,7 +440,11 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(output, "")
 
     def test_actual_read_failure(self):
-        with patch("pathlib.Path.open") as opened:
+        with (
+            patch("splitwitness.core.open") as opened,
+            patch("splitwitness.core.stat.S_ISREG", return_value=True),
+        ):
+            opened.return_value.__enter__.return_value.fileno.return_value = 0
             opened.return_value.__enter__.return_value.read.side_effect = OSError(
                 "private"
             )
