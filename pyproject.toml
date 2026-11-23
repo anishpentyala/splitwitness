@@ -6,9 +6,16 @@ build-backend = "setuptools.build_meta"
 name = "splitwitness"
 version = "0.2.2"
 description = "Offline transitive split-constraint audits with bounded witness paths"
+authors = [{name = "Anish Pentyala"}]
+keywords = ["machine-learning", "data-leakage", "csv", "data-validation"]
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
+
+[project.urls]
+Homepage = "https://github.com/anishpentyala/splitwitness"
+Repository = "https://github.com/anishpentyala/splitwitness"
+Issues = "https://github.com/anishpentyala/splitwitness/issues"
 
 [project.scripts]
 splitwitness = "splitwitness.__main__:main"
