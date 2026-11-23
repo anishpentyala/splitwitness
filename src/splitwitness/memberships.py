@@ -11,7 +11,9 @@ def _path(start, end, by_record, by_group, cap):
     queue = deque([start])
     previous = {start: None}
     expanded = set()
-    while queue:
+    # First discovery fixes the shortest lexical path. Queued siblings cannot
+    # improve it, so do not expand them just to dequeue the destination.
+    while queue and end not in previous:
         current = queue.popleft()
         if current == end:
             break
