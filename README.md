@@ -169,8 +169,14 @@ streaming/disk-backed implementation and caps are **not** hard RAM or runtime
 bounds. Memory use is O(input bytes + records + links); retained graph adjacency
 includes both orientations. Sorting and witness searches add work. Each sampled
 component is searched separately. Membership mode has its own incidence-graph
-costs described in MEMBERSHIPS.md. Avoid untrusted device/FIFO paths or files that
-may block indefinitely. There is no timeout or sandbox for filesystem reads.
+costs described in MEMBERSHIPS.md. Inputs must be regular files, verified on the
+opened descriptor before reading. Pipes (including FIFOs with a live writer),
+process substitution such as `/dev/fd` pipes, and devices are refused. This is
+an input-compatibility change: provide regular manifest files instead. Symlinks
+to regular files are allowed. On POSIX, nonblocking open also refuses writerless
+FIFOs instead of waiting for a writer. This
+is not a filesystem timeout or sandbox: opening or reading a regular file on a
+stalled filesystem can still block, and inputs can change while they are read.
 
 No network calls, telemetry, persistent cache or scratch database. No payload
 columns are accepted. Still, identifiers, split labels and relationships can be
