@@ -121,6 +121,8 @@ def audit_memberships(
     violations = []
     pairs = 0
     for members in components.values():
+        if len(members) == 1:
+            continue
         counts = Counter(splits[key] for key in members)
         if len(counts) > 1:
             affected.update(counts)
