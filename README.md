@@ -264,3 +264,19 @@ link-mode singleton and 90%-singleton fixtures fell from about 108 to 72 ms and
 196 ms and 241 to 192 ms (9 runs each). Chain and pair fixtures did not show a
 reliable improvement; peak traced memory was essentially unchanged. These are
 local fixture timings, not general performance guarantees.
+
+### Stop witness search when its destination is discovered
+
+A breadth-first search fixes the shortest path, including the existing lexical
+choice among ties, when it first discovers the chosen destination. Both link
+and membership witnesses stop before expanding further queued records. They
+still finish the current record's neighbor scan; witness endpoints, hop counts,
+path caps, and report contents are unchanged. This only affects opt-in examples.
+
+On a local synthetic 700-record complete link graph (244,650 links), a full audit
+with one example took a five-run median 0.478 s before and 0.434 s after this
+change. Counts-only time was roughly unchanged (0.402 s versus 0.410 s).
+A separate in-memory 1,000-record complete-graph witness probe fell from about
+36 ms to 0.11 ms, which excludes CSV parsing, validation and component building.
+These fixture timings are not general performance guarantees; dense graph
+admission and counts still require processing all declared links.
