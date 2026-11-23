@@ -237,3 +237,13 @@ undirected-link duplicate detection, component members and other report state
 still consume memory; this is not streaming input or a hard RAM/time bound.
 Actual memory and time depend on graph shape and requested evidence, so no
 portable reduction or speedup is promised.
+
+### Link-order normalization
+
+The link scan orders its two string endpoints directly instead of sorting a
+new two-item list for every row. Reversed duplicate detection, self-links,
+relation labels, validation errors and witness ordering are unchanged. In a
+local synthetic counts-only audit of 20,000 records and 100,000 links, nine
+alternating runs had median whole-audit time of 227.85 ms before and 209.89 ms
+after this change, about 8% lower. This is one local fixture, not a general
+speed or memory-use guarantee.
