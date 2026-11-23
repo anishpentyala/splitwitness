@@ -161,7 +161,7 @@ def audit(records_path, links_path, *, examples=0, max_witness_edges=20, limits=
     for number, (left, right, relation) in enumerate(rows, 2):
         if left not in splits or right not in splits:
             raise AuditError(f"links: unknown endpoint at record {number}")
-        edge = (*sorted((left, right)), relation)
+        edge = (left, right, relation) if left <= right else (right, left, relation)
         if edge in seen:
             raise AuditError(f"links: duplicate undirected link at record {number}")
         seen.add(edge)
