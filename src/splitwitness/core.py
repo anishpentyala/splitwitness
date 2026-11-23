@@ -180,6 +180,8 @@ def audit(records_path, links_path, *, examples=0, max_witness_edges=20, limits=
     bad = []
     cross_pairs = 0
     for members in components.values():
+        if len(members) == 1:
+            continue
         counts = Counter(splits[key] for key in members)
         if len(counts) > 1:
             affected.update(counts)
