@@ -46,6 +46,28 @@ class MembershipTests(unittest.TestCase):
             )
         return code, output.getvalue(), error.getvalue()
 
+    def test_singleton_components_do_not_build_split_counters(self):
+        self.write(
+            [("a", "train"), ("b", "test"), ("c", "train"), ("d", "val")],
+            [("a", "x", "a"), ("b", "x", "bc"), ("c", "x", "bc"), ("d", "x", "d")],
+        )
+        from collections import Counter
+
+        sizes = []
+
+        def tracked(values=()):
+            values = list(values)
+            sizes.append(len(values))
+            return Counter(values)
+
+        expected = self.audit(examples=2)
+        with patch("splitwitness.memberships.Counter", side_effect=tracked):
+            actual = self.audit(examples=2)
+        self.assertEqual(actual, expected)
+        self.assertEqual(sizes, [4, 0, 2])
+        self.assertEqual(actual["counts"]["violating_components"], 1)
+        self.assertEqual(actual["examples"][0]["component_id"], "b")
+
     def test_direct_shared_group(self):
         r = self.audit(examples=1)
         self.assertFalse(r["passed"])
