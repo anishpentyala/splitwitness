@@ -247,3 +247,14 @@ local synthetic counts-only audit of 20,000 records and 100,000 links, nine
 alternating runs had median whole-audit time of 227.85 ms before and 209.89 ms
 after this change, about 8% lower. This is one local fixture, not a general
 speed or memory-use guarantee.
+
+### Singleton component summaries
+
+Singleton components cannot violate a split boundary, so both graph modes skip
+building per-component split counters for them. Counts, receipts, ordering and
+example witnesses are unchanged. In local alternating runs over 50,000 records,
+link-mode singleton and 90%-singleton fixtures fell from about 108 to 72 ms and
+113 to 79 ms (15 runs each). Membership-mode fixtures fell from about 232 to
+196 ms and 241 to 192 ms (9 runs each). Chain and pair fixtures did not show a
+reliable improvement; peak traced memory was essentially unchanged. These are
+local fixture timings, not general performance guarantees.
