@@ -1,8 +1,37 @@
 # splitwitness
 
+[![Tests](https://github.com/anishpentyala/splitwitness/actions/workflows/ci.yml/badge.svg)](https://github.com/anishpentyala/splitwitness/actions)
+
 Audit an existing train/validation/test assignment against explicit links that
 must stay in one partition. Get exact component counts and optional short,
 reproducible evidence paths. Runs offline, with Python's standard library.
+
+## Quickstart
+
+```sh
+python -m pip install "git+https://github.com/anishpentyala/splitwitness.git"
+cat > records.csv <<'CSV'
+id,split
+a,train
+b,train
+c,test
+CSV
+cat > links.csv <<'CSV'
+left_id,right_id,relation
+a,b,same-person
+b,c,duplicate-export
+CSV
+splitwitness records.csv links.csv --examples 1
+```
+
+This exits 1: all three records belong to one component spanning train and test.
+Only one link crosses directly, but two unordered cross-split record pairs are
+connected. Checking the grouping columns independently would miss the transitive
+relationship. The report checks only the links you supplied, not identity,
+statistical independence or all possible leakage.
+
+A PyPI release is being prepared. Until its package page is linked here, use the
+source-install command above.
 
 A duplicate export can connect two patient groups even when the patient IDs do
 not overlap. Checking each grouping column separately misses the full affected
